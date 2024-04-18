@@ -12,6 +12,7 @@ import {
   deletePickupLocation,
   updatePickupLocation,
 } from '../../actions/pickupLocationActions';
+import { getUserProfile } from '../../actions/userProfileActions';
 
 const MyModal = (props) => {
   const pickupLocation = props.pickup;
@@ -33,14 +34,21 @@ const MyModal = (props) => {
     navigate(`/edit-pickup-location/${pickupLocation.pickLocId}`);
   };
 
-  const handleNavigate = () => {};
+  const handleNavigate = () => {
+    const url =
+      'https://maps.google.com/?q=' +
+      pickupLocation.latitude +
+      ',' +
+      pickupLocation.longitude;
+    window.open(url);
+  };
 
   const getCurrentDateTime = () => {
     var currentdate = new Date();
     return (
       ('0' + currentdate.getDate()).slice(-2) +
       '-' +
-      ('0' + currentdate.getMonth() + 1).slice(-2) +
+      ('0' + (currentdate.getMonth() + 1)).slice(-2) +
       '-' +
       currentdate.getFullYear() +
       ' ' +
@@ -59,6 +67,7 @@ const MyModal = (props) => {
 
     updatePickupLocation(dispatch, pickupLocation, token).then((data) => {
       if (data.type === pickupLocationConstants.UPDATE_PICKUPLOCATION_SUCCESS) {
+        getUserProfile(token);
         swal(
           'Pickup Location cleaned!',
           `${pickupLocation.city} succesfully cleaned`,
